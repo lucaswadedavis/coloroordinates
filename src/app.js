@@ -16,6 +16,7 @@ app.t={};
 
 app.m.bounds=false;
 app.m.scene=false;
+app.m.colorMap=false;
 app.m.appName="Coloroordinates";
 
 ///////////////////////////////////////////////////////
@@ -26,6 +27,26 @@ app.c.init=function(){
   app.v.listeners();
 };
 
+app.c.getImageData=function(){
+  var c=document.getElementById("canvas");
+  var ctx=c.getContext("2d");
+  var img=document.getElementById("uploaded");
+  var imageWidth=$("img").width();
+  var imageHeight=$("img").height();
+  $("canvas").attr({
+    width:imageWidth,
+    height:imageHeight
+  });
+  ctx.drawImage(img,0,0);
+  var imgData=ctx.getImageData(0,0,imageWidth,imageHeight);
+  var colorMap = app.m.colorMap={};
+  for (var i=0;i<imgData.data.length;i++){
+    var color="rgb("+imgData.data[i]+","+imgData.data[i+1]+","+imgData.data[i+2]+")"; 
+    colorMap[color] ? colorMap[color]++ : colorMap[color]=1;
+  }
+  
+};
+
 ///////////////////////////////////////////////////////end controllers
 ///////////////////////////////////////////////////////begin views
 
@@ -33,7 +54,7 @@ app.v.init=function(){
     app.m.bounds=app.v.initBounds();
     zi.css();
     $("body").html(app.t.layout() );
-    app.v.initScene();
+    //app.v.initScene();
 };
 
 app.v.initBounds=function(){
@@ -92,14 +113,15 @@ app.v.initScene=function(){
 				for ( var i = 0; i < 1000; i++ ) {
 
 					var material = new THREE.SpriteCanvasMaterial( {
-						color: Math.random() * 0x808008 + 0x808080,
+						//color: Math.random() * 0x808008 + 0x808080,
+						color: chance.color(),
 						program: program
 					} );
 
 					particle = new THREE.Sprite( material );
-					particle.position.x = Math.random() * 2000 - 1000;
-					particle.position.y = Math.random() * 2000 - 1000;
-					particle.position.z = Math.random() * 2000 - 1000;
+					particle.position.x =10*Math.sin(i);
+					particle.position.y = -100;
+					particle.position.z = i*10;
 					particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
 					group.add( particle );
 				}
@@ -174,11 +196,11 @@ app.v.initScene=function(){
 
 			function render() {
 
-				//camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				camera.position.x += ( mouseX - camera.position.x ) * 0.5;
 				//camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
 				camera.lookAt( scene.position );
 
-				group.rotation.x += 0.01;
+				//group.rotation.x += 0.01;
 				//group.rotation.y += 0.02;
 
 				renderer.render( scene, camera );
@@ -187,12 +209,42 @@ app.v.initScene=function(){
 };
 
 app.v.listeners=function(){
+  
+   function previewFile(){
+       var preview = document.querySelector('img'); //selects the query named img
+       var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+       var reader  = new FileReader();
+
+       reader.onloadend = function () {
+           preview.src = reader.result;
+       }
+
+       if (file) {
+           reader.readAsDataURL(file); //reads the data as a URL
+       } else {
+           preview.src = "";
+       }
+  }
+  
+  $("body").on("click","input[type=file]",function(){
+    previewFile();
+  })
+
 };
 
 ///////////////////////////////////////////////////////end views
 ///////////////////////////////////////////////////////begin templates
 
 app.t.layout=function(){
+  var d="";
+  d+="<input type='file'></input>";
+  d+="<br>";
+  d+="<img src=''/ id='uploaded'>";
+  d+="<canvas id='canvas'></canvas>";
+  return d;
+};
+
+app.t.coloroordinates=function(){
   var d="";
   d+="<div id='container'></div>";
   return d;
@@ -212,10 +264,13 @@ zi.config=function(){
         "background":"#555"
       },
       "canvas":{
+        
+        /*
         "margin":"0",
         "padding":"0",
         "border":"0",
         "position":"fixed"
+        */
       },
       "canvas#paper":{
         "z-index":"-1"
