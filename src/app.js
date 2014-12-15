@@ -40,11 +40,14 @@ app.c.getImageData=function(){
   ctx.drawImage(img,0,0);
   var imgData=ctx.getImageData(0,0,imageWidth,imageHeight);
   var colorMap = app.m.colorMap={};
-  for (var i=0;i<imgData.data.length;i++){
-    var color="rgb("+imgData.data[i]+","+imgData.data[i+1]+","+imgData.data[i+2]+")"; 
-    colorMap[color] ? colorMap[color]++ : colorMap[color]=1;
+  for (var i=0;i<imgData.data.length;i+=4){
+    if (imgData.data[i+3]>0){
+      var color="rgb("+imgData.data[i]+","+imgData.data[i+1]+","+imgData.data[i+2]+")"; 
+      colorMap[color] ? colorMap[color]++ : colorMap[color]=1;
+    }
   }
   
+  app.v.initScene();
 };
 
 ///////////////////////////////////////////////////////end controllers
@@ -78,6 +81,7 @@ app.v.initBounds=function(){
 };
 
 app.v.initScene=function(){	
+      $("body").html(app.t.coloroordinates());
 			var container;
 			var camera, scene, renderer, group, particle;
 			var mouseX = 0, mouseY = 0;
@@ -110,19 +114,25 @@ app.v.initScene=function(){
 				group = new THREE.Group();
 				scene.add( group );
 
-				for ( var i = 0; i < 1000; i++ ) {
 
+        //return to here
+				for (var key in app.m.colorMap) {
+          var colorNumberString=key.substring(5);
+          var colors=colorNumberString.split(",");
+          var red=parseInt(colors[0],10);
+          var green=parseInt(colors[1],10);
+          var blue=parseInt(colors[2],10);
 					var material = new THREE.SpriteCanvasMaterial( {
 						//color: Math.random() * 0x808008 + 0x808080,
-						color: chance.color(),
+						color: key,
 						program: program
 					} );
 
 					particle = new THREE.Sprite( material );
-					particle.position.x =10*Math.sin(i);
-					particle.position.y = -100;
-					particle.position.z = i*10;
-					particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
+					particle.position.x =2*red;
+					particle.position.y =2*green;
+					particle.position.z =2*blue;
+					particle.scale.x = particle.scale.y = 2;
 					group.add( particle );
 				}
 
@@ -228,6 +238,7 @@ app.v.listeners=function(){
   
   $("body").on("click","input[type=file]",function(){
     previewFile();
+    //app.c.getImageData();
   })
 
 };
