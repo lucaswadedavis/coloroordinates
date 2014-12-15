@@ -57,14 +57,8 @@ app.v.initBounds=function(){
 };
 
 app.v.initScene=function(){	
-			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
 			var container;
-
-			var camera, scene, renderer;
-
-			var mesh, group1, group2, group3, light;
-
+			var camera, scene, renderer, group, particle;
 			var mouseX = 0, mouseY = 0;
 
 			var windowHalfX = window.innerWidth / 2;
@@ -75,127 +69,48 @@ app.v.initScene=function(){
 
 			function init() {
 
-				container = document.getElementById( 'container' );
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
-				camera = new THREE.PerspectiveCamera( 20, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 1800;
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 );
+				camera.position.z = 1000;
 
 				scene = new THREE.Scene();
 
-				light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 0, 0, 1 );
-				scene.add( light );
+				var PI2 = Math.PI * 2;
+				var program = function ( context ) {
 
-				// shadow
-
-				var canvas = document.createElement( 'canvas' );
-				canvas.width = 128;
-				canvas.height = 128;
-
-				var context = canvas.getContext( '2d' );
-				var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-				gradient.addColorStop( 0.1, 'rgba(210,210,210,1)' );
-				gradient.addColorStop( 1, 'rgba(255,255,255,1)' );
-
-				context.fillStyle = gradient;
-				context.fillRect( 0, 0, canvas.width, canvas.height );
-
-				var shadowTexture = new THREE.Texture( canvas );
-				shadowTexture.needsUpdate = true;
-
-				var shadowMaterial = new THREE.MeshBasicMaterial( { map: shadowTexture } );
-				var shadowGeo = new THREE.PlaneBufferGeometry( 300, 300, 1, 1 );
-
-				mesh = new THREE.Mesh( shadowGeo, shadowMaterial );
-				mesh.position.y = - 250;
-				mesh.rotation.x = - Math.PI / 2;
-				scene.add( mesh );
-
-				mesh = new THREE.Mesh( shadowGeo, shadowMaterial );
-				mesh.position.y = - 250;
-				mesh.position.x = - 400;
-				mesh.rotation.x = - Math.PI / 2;
-				scene.add( mesh );
-
-				mesh = new THREE.Mesh( shadowGeo, shadowMaterial );
-				mesh.position.y = - 250;
-				mesh.position.x = 400;
-				mesh.rotation.x = - Math.PI / 2;
-				scene.add( mesh );
-
-				var faceIndices = [ 'a', 'b', 'c', 'd' ];
-
-				var color, f, f2, f3, p, n, vertexIndex,
-
-					radius = 200,
-
-					geometry  = new THREE.IcosahedronGeometry( radius, 1 ),
-					geometry2 = new THREE.IcosahedronGeometry( radius, 1 ),
-					geometry3 = new THREE.IcosahedronGeometry( radius, 1 );
-
-				for ( var i = 0; i < geometry.faces.length; i ++ ) {
-
-					f  = geometry.faces[ i ];
-					f2 = geometry2.faces[ i ];
-					f3 = geometry3.faces[ i ];
-
-					n = ( f instanceof THREE.Face3 ) ? 3 : 4;
-
-					for( var j = 0; j < n; j++ ) {
-
-						vertexIndex = f[ faceIndices[ j ] ];
-
-						p = geometry.vertices[ vertexIndex ];
-
-						color = new THREE.Color( 0xffffff );
-						color.setHSL( ( p.y / radius + 1 ) / 2, 1.0, 0.5 );
-
-						f.vertexColors[ j ] = color;
-
-						color = new THREE.Color( 0xffffff );
-						color.setHSL( 0.0, ( p.y / radius + 1 ) / 2, 0.5 );
-
-						f2.vertexColors[ j ] = color;
-
-						color = new THREE.Color( 0xffffff );
-						color.setHSL( 0.125 * vertexIndex/geometry.vertices.length, 1.0, 0.5 );
-
-						f3.vertexColors[ j ] = color;
-
-					}
+					context.beginPath();
+					context.arc( 0, 0, 0.5, 0, PI2, true );
+					context.fill();
 
 				}
 
+				group = new THREE.Group();
+				scene.add( group );
 
-				var materials = [
+				for ( var i = 0; i < 1000; i++ ) {
 
-					new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } ),
-					new THREE.MeshBasicMaterial( { color: 0x000000, shading: THREE.FlatShading, wireframe: true, transparent: true } )
+					var material = new THREE.SpriteCanvasMaterial( {
+						color: Math.random() * 0x808008 + 0x808080,
+						program: program
+					} );
 
-				];
+					particle = new THREE.Sprite( material );
+					particle.position.x = Math.random() * 2000 - 1000;
+					particle.position.y = Math.random() * 2000 - 1000;
+					particle.position.z = Math.random() * 2000 - 1000;
+					particle.scale.x = particle.scale.y = Math.random() * 20 + 10;
+					group.add( particle );
+				}
 
-				group1 = THREE.SceneUtils.createMultiMaterialObject( geometry, materials );
-				group1.position.x = -400;
-				group1.rotation.x = -1.87;
-				scene.add( group1 );
-
-				group2 = THREE.SceneUtils.createMultiMaterialObject( geometry2, materials );
-				group2.position.x = 400;
-				group2.rotation.x = 0;
-				scene.add( group2 );
-
-				group3 = THREE.SceneUtils.createMultiMaterialObject( geometry3, materials );
-				group3.position.x = 0;
-				group3.rotation.x = 0;
-				scene.add( group3 );
-
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setClearColor( 0xffffff );
+				renderer = new THREE.CanvasRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
-
 				container.appendChild( renderer.domElement );
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 
 				//
 
@@ -215,10 +130,37 @@ app.v.initScene=function(){
 
 			}
 
+			//
+
 			function onDocumentMouseMove( event ) {
 
-				mouseX = ( event.clientX - windowHalfX );
-				mouseY = ( event.clientY - windowHalfY );
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+			}
+
+			function onDocumentTouchStart( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+				}
+
+			}
+
+			function onDocumentTouchMove( event ) {
+
+				if ( event.touches.length === 1 ) {
+
+					event.preventDefault();
+
+					mouseX = event.touches[ 0 ].pageX - windowHalfX;
+					mouseY = event.touches[ 0 ].pageY - windowHalfY;
+
+				}
 
 			}
 
@@ -227,16 +169,17 @@ app.v.initScene=function(){
 			function animate() {
 
 				requestAnimationFrame( animate );
-
 				render();
 			}
 
 			function render() {
 
-				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
-				camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
-
+				//camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				//camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
 				camera.lookAt( scene.position );
+
+				group.rotation.x += 0.01;
+				//group.rotation.y += 0.02;
 
 				renderer.render( scene, camera );
 
