@@ -97,8 +97,11 @@ app.v.initScene=function(){
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 );
-				camera.position.z = 1000;
+        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+        camera.position.z = 1000;
+
+        controls = new THREE.OrbitControls( camera );
+        controls.addEventListener( 'change', render );
 
 				scene = new THREE.Scene();
 
@@ -115,6 +118,18 @@ app.v.initScene=function(){
 				scene.add( group );
 
 
+				var geometry = new THREE.BoxGeometry( 512, 512, 512 );
+
+				var material = new THREE.MeshBasicMaterial({wireframe:true} );
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.translateZ(256);							
+				mesh.translateY(256);
+				mesh.translateX(256);
+
+				scene.add( mesh );
+
+
         //return to here
 				for (var key in app.m.colorMap) {
           var colorNumberString=key.substring(5);
@@ -129,10 +144,10 @@ app.v.initScene=function(){
 					} );
 
 					particle = new THREE.Sprite( material );
-					particle.position.x =5*red;
-					particle.position.y =5*green;
-					particle.position.z =5*blue;
-					particle.scale.x = particle.scale.y = 10;
+					particle.position.x =2*red;
+					particle.position.y =2*green;
+					particle.position.z =2*blue;
+					particle.scale.x = particle.scale.y = 3;
 					group.add( particle );
 				}
 
@@ -140,10 +155,11 @@ app.v.initScene=function(){
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
 
+        /*
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
+        */
 				//
 
 				window.addEventListener( 'resize', onWindowResize, false );
@@ -208,7 +224,7 @@ app.v.initScene=function(){
 
 				//camera.position.x += ( mouseX - camera.position.x ) * 0.5;
 				//camera.position.z += ( - mouseY - camera.position.z ) * 0.05;
-				camera.lookAt( scene.position );
+				camera.lookAt(new THREE.Vector3(256,256,256));
 
 				//group.rotation.x += 0.01;
 				//group.rotation.y += 0.02;
