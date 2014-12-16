@@ -129,10 +129,10 @@ app.v.initScene=function(){
 					} );
 
 					particle = new THREE.Sprite( material );
-					particle.position.x =2*red;
-					particle.position.y =2*green;
-					particle.position.z =2*blue;
-					particle.scale.x = particle.scale.y = 2;
+					particle.position.x =5*red;
+					particle.position.y =5*green;
+					particle.position.z =5*blue;
+					particle.scale.x = particle.scale.y = 10;
 					group.add( particle );
 				}
 
@@ -206,8 +206,8 @@ app.v.initScene=function(){
 
 			function render() {
 
-				camera.position.x += ( mouseX - camera.position.x ) * 0.5;
-				//camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+				//camera.position.x += ( mouseX - camera.position.x ) * 0.5;
+				//camera.position.z += ( - mouseY - camera.position.z ) * 0.05;
 				camera.lookAt( scene.position );
 
 				//group.rotation.x += 0.01;
@@ -216,6 +216,40 @@ app.v.initScene=function(){
 				renderer.render( scene, camera );
 
 			}
+			
+			
+			$("body").on("keydown",function(event){ 
+			  //left
+			  
+			  if (event.which===87){
+  			  camera.position.y -=100;
+			  }
+			  //right
+			  
+			  if (event.which===83){
+  			  camera.position.y +=100;
+			  }
+			  //left
+			  
+			  if (event.which===37){
+  			  camera.position.x -=100;
+			  }
+			  //right
+			  
+			  if (event.which===39){
+  			  camera.position.x +=100;
+			  }
+			  //zoom in
+			  
+			  if (event.which===38){
+  			  camera.position.z +=100;
+			  }
+			  //zoom out
+			  if (event.which===40){
+  			  camera.position.z -=100;
+			  }
+
+			});
 };
 
 app.v.listeners=function(){
