@@ -106,7 +106,7 @@ app.v.initScene=function(){
         camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 1000;
         camera.position.y = 600;
-        camera.position.x = 1000;
+        camera.position.x = 800;
 
         controls = new THREE.OrbitControls( camera );
         controls.addEventListener( 'change', render );
