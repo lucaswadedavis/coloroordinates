@@ -97,7 +97,7 @@ app.v.initScene=function(){
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 1000;
 
         controls = new THREE.OrbitControls( camera );
@@ -147,7 +147,7 @@ app.v.initScene=function(){
 					particle.position.x =2*red;
 					particle.position.y =2*green;
 					particle.position.z =2*blue;
-					particle.scale.x = particle.scale.y = 3;
+					particle.scale.x = particle.scale.y = 2;
 					group.add( particle );
 				}
 
@@ -232,40 +232,7 @@ app.v.initScene=function(){
 				renderer.render( scene, camera );
 
 			}
-			
-			
-			$("body").on("keydown",function(event){ 
-			  //left
-			  
-			  if (event.which===87){
-  			  camera.position.y -=100;
-			  }
-			  //right
-			  
-			  if (event.which===83){
-  			  camera.position.y +=100;
-			  }
-			  //left
-			  
-			  if (event.which===37){
-  			  camera.position.x -=100;
-			  }
-			  //right
-			  
-			  if (event.which===39){
-  			  camera.position.x +=100;
-			  }
-			  //zoom in
-			  
-			  if (event.which===38){
-  			  camera.position.z +=100;
-			  }
-			  //zoom out
-			  if (event.which===40){
-  			  camera.position.z -=100;
-			  }
 
-			});
 };
 
 app.v.listeners=function(){
@@ -276,7 +243,7 @@ app.v.listeners=function(){
        var reader  = new FileReader();
 
        reader.onloadend = function () {
-           preview.src = reader.result;
+          preview.src = reader.result;
        }
 
        if (file) {
@@ -286,9 +253,24 @@ app.v.listeners=function(){
        }
   }
   
-  $("body").on("click","input[type=file]",function(){
-    previewFile();
-    //app.c.getImageData();
+  $("body").on("change","input[type=file]",function(){
+    
+       var preview = document.querySelector('img'); //selects the query named img
+       var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+       var reader  = new FileReader();
+
+       reader.onloadend = function () {
+        preview.src = reader.result;
+        app.c.getImageData();
+
+       }
+
+       if (file) {
+          reader.readAsDataURL(file); //reads the data as a URL
+       } else {
+           preview.src = "";
+       }
+       
   })
 
 };
