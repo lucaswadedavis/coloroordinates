@@ -293,6 +293,7 @@ app.t.layout=function(){
   d+="<br>";
   d+="<img src=''/ id='uploaded'>";
   d+="<canvas id='canvas'></canvas>";
+  d+="<p>upload an image to see it's colors displayed in 3-space. The x, y, and z axes are the red, green, and blue values of the image's constituent pixels.</p>";
   return d;
 };
 
@@ -311,6 +312,7 @@ zi.config=function(){
       "body":{
         "text-align":"center",
         "font-family":"sans-serif",
+        "color":"#fff",
         "padding":"0",
         "margin":"0",
         "border":"0",
@@ -343,7 +345,7 @@ zi.config=function(){
       "input[type=file]":{
         "cursor":"pointer",
         "margin":"30px",
-        "margin-top":"200px",
+        "margin-top":"120px",
         "font-size":"3em",
         "background-color":"#f37"
       }
