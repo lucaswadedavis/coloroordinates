@@ -233,6 +233,9 @@ app.v.initScene=function(){
 
 			}
 
+
+    delete app.m.colorMap;
+    
 };
 
 app.v.listeners=function(){
@@ -300,6 +303,7 @@ zi={};
 zi.config=function(){
     var css={
       "body":{
+        "text-align":"center",
         "font-family":"sans-serif",
         "padding":"0",
         "margin":"0",
@@ -329,6 +333,12 @@ zi.config=function(){
         "color":"#ddd",
         "position":"fixed",
         "z-index":"0"
+      },
+      "input[type=file]":{
+        "cursor":"pointer",
+        "margin":"30px",
+        "font-size":"3em",
+        "background-color":"#f37"
       }
     };
     return css;
