@@ -140,7 +140,7 @@ app.v.initScene=function(){
 
         //return to here
 				for (var key in app.m.colorMap) {
-          var colorNumberString=key.substring(5);
+          var colorNumberString=key.substring(4);
           var colors=colorNumberString.split(",");
           var red=parseInt(colors[0],10);
           var green=parseInt(colors[1],10);
