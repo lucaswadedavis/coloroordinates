@@ -28,6 +28,12 @@ app.c.init=function(){
 };
 
 app.c.getImageData=function(){
+    var simplify=function(number,base){
+      if (base===undefined){
+          var base=15;
+      }
+      return Math.floor(number/base)*base;  
+    };
   var c=document.getElementById("canvas");
   var ctx=c.getContext("2d");
   var img=document.getElementById("uploaded");
@@ -42,7 +48,7 @@ app.c.getImageData=function(){
   var colorMap = app.m.colorMap={};
   for (var i=0;i<imgData.data.length;i+=4){
     if (imgData.data[i+3]>0){
-      var color="rgb("+imgData.data[i]+","+imgData.data[i+1]+","+imgData.data[i+2]+")"; 
+      var color="rgb("+simplify(imgData.data[i])+","+simplify(imgData.data[i+1])+","+simplify(imgData.data[i+2])+")"; 
       colorMap[color] ? colorMap[color]++ : colorMap[color]=1;
     }
   }
@@ -118,14 +124,14 @@ app.v.initScene=function(){
 				scene.add( group );
 
 
-				var geometry = new THREE.BoxGeometry( 512, 512, 512 );
+				var geometry = new THREE.BoxGeometry( 545, 545, 545 );
 
 				var material = new THREE.MeshBasicMaterial({wireframe:true} );
 
 				mesh = new THREE.Mesh( geometry, material );
-				mesh.translateZ(256);							
-				mesh.translateY(256);
-				mesh.translateX(256);
+				mesh.translateZ(250);							
+				mesh.translateY(250);
+				mesh.translateX(250);
 
 				scene.add( mesh );
 
@@ -147,7 +153,7 @@ app.v.initScene=function(){
 					particle.position.x =2*red;
 					particle.position.y =2*green;
 					particle.position.z =2*blue;
-					particle.scale.x = particle.scale.y = 2;
+					particle.scale.x = particle.scale.y = 30;
 					group.add( particle );
 				}
 
@@ -337,6 +343,7 @@ zi.config=function(){
       "input[type=file]":{
         "cursor":"pointer",
         "margin":"30px",
+        "margin-top":"200px",
         "font-size":"3em",
         "background-color":"#f37"
       }
