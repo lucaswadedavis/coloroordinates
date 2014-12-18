@@ -160,7 +160,9 @@ app.v.initScene=function(){
 				}
 
 				renderer = new THREE.CanvasRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( 0x333333, 1);
+
+				renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
 				container.appendChild( renderer.domElement );
 
         /*
@@ -247,23 +249,7 @@ app.v.initScene=function(){
 };
 
 app.v.listeners=function(){
-  
-   function previewFile(){
-       var preview = document.querySelector('img'); //selects the query named img
-       var file    = document.querySelector('input[type=file]').files[0]; //sames as here
-       var reader  = new FileReader();
 
-       reader.onloadend = function () {
-          preview.src = reader.result;
-       }
-
-       if (file) {
-           reader.readAsDataURL(file); //reads the data as a URL
-       } else {
-           preview.src = "";
-       }
-  }
-  
   $("body").on("change","input[type=file]",function(){
     
        var preview = document.querySelector('img'); //selects the query named img
@@ -291,7 +277,7 @@ app.v.listeners=function(){
 
 app.t.layout=function(){
   var d="";
-  d+="<input type='file'></input>";
+  d+="<input type='file' id='imageUpload'></input>";
   d+="<br>";
   d+="<img src=''/ id='uploaded'>";
   d+="<canvas id='canvas'></canvas>";
@@ -318,33 +304,9 @@ zi.config=function(){
         "padding":"0",
         "margin":"0",
         "border":"0",
-        "background":"#555"
+        "background":"#333333"
       },
-      "canvas":{
-        
-        /*
-        "margin":"0",
-        "padding":"0",
-        "border":"0",
-        "position":"fixed"
-        */
-      },
-      "canvas#paper":{
-        "z-index":"-1"
-      },
-      "div#yesterday":{
-        "float":"left"
-      },
-      "div#tomorrow":{
-        "float":"right"
-      },
-      "div#dateDisplay":{
-        "padding":"30px",
-        "color":"#ddd",
-        "position":"fixed",
-        "z-index":"0"
-      },
-      "input[type=file]":{
+      "input[type=file]#imageUpload":{
         "cursor":"pointer",
         "margin":"30px",
         "margin-top":"120px",
