@@ -310,7 +310,6 @@ zi.config=function(){
         "cursor":"pointer",
         "margin":"30px",
         "margin-top":"120px",
-        "font-size":"3em",
         "background-color":"#f37"
       }
     };
