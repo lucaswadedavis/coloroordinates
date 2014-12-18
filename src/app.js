@@ -252,7 +252,7 @@ app.v.listeners=function(){
 
   $("body").on("change","input[type=file]",function(){
     
-       var preview = document.querySelector('img'); //selects the query named img
+       var preview = document.querySelector('img#uploaded'); //selects the query named img
        var file    = document.querySelector('input[type=file]').files[0]; //sames as here
        var reader  = new FileReader();
 
@@ -277,11 +277,13 @@ app.v.listeners=function(){
 
 app.t.layout=function(){
   var d="";
+  d+="<img src='img/rainbow.png' alt='rainbow' />";
+  d+="<br>";
   d+="<input type='file' id='imageUpload'></input>";
+  d+="<p>upload an image to see it's colors displayed in 3-space. The x, y, and z axes are the red, green, and blue values of the image's constituent pixels.</p>";
   d+="<br>";
   d+="<img src=''/ id='uploaded'>";
   d+="<canvas id='canvas'></canvas>";
-  d+="<p>upload an image to see it's colors displayed in 3-space. The x, y, and z axes are the red, green, and blue values of the image's constituent pixels.</p>";
   return d;
 };
 
@@ -308,8 +310,6 @@ zi.config=function(){
       },
       "input[type=file]#imageUpload":{
         "cursor":"pointer",
-        "margin":"30px",
-        "margin-top":"120px",
         "background-color":"#f37"
       }
     };
